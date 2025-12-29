@@ -84,7 +84,7 @@ const Header: React.FC<HeaderProps> = React.memo(({ onNavigate, recordedDays }) 
     const weekDays = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
     const dayName = weekDays[date.getDay()];
     const dayNum = date.getDate();
-    const monthName = date.toLocaleDateString('en-US', { month: 'long' });
+    const monthName = date.toLocaleDateString('en-US', { month: 'short' });
 
     // Daily Quotes Logic
     const quotes = [
@@ -103,46 +103,35 @@ const Header: React.FC<HeaderProps> = React.memo(({ onNavigate, recordedDays }) 
     const dailyQuote = quotes[quoteIndex];
 
     return (
-      <header className="px-6 pt-10 pb-2 relative z-10 animate-fade-in">
-        <div className="flex justify-between items-start">
-            {/* Left: Date Info */}
-            <div className="flex flex-col pt-1">
-                <span className="text-xs font-bold text-ink-400 uppercase tracking-widest mb-0.5">
-                    {monthName} {date.getFullYear()}
+      <header className="px-6 pt-8 pb-1 relative z-10 animate-fade-in">
+        <div className="flex justify-between items-center">
+            {/* Left: Date Info - More compact */}
+            <div className="flex items-center gap-3">
+                <span className="text-4xl font-light text-ink-900 tracking-tighter leading-none font-serif">
+                    {dayNum}
                 </span>
-                <div className="flex items-baseline gap-2">
-                    <span className="text-5xl font-light text-ink-900 tracking-tighter leading-none font-serif">
-                        {dayNum}
+                <div className="flex flex-col">
+                    <span className="text-[10px] font-bold text-ink-400 uppercase tracking-widest leading-none mb-1">
+                        {monthName} {dayName}
                     </span>
-                    <span className="text-base font-medium text-ink-600">
-                        {dayName}
-                    </span>
+                    <p className="text-xs text-ink-700 font-serif leading-none italic pr-4">
+                        "{dailyQuote}"
+                    </p>
                 </div>
             </div>
 
-            {/* Right: Merged Streak & History Badge */}
+            {/* Right: Merged Streak & History Badge - More compact */}
             <button 
                 onClick={() => onNavigate(ViewState.HISTORY)}
-                className="flex flex-col items-end bg-white/60 backdrop-blur-md rounded-2xl p-2 pl-3 border border-white/60 shadow-sm active:scale-95 transition-transform group"
+                className="flex items-center gap-2 bg-white/60 backdrop-blur-md rounded-xl p-1.5 pl-2.5 border border-white/60 shadow-sm active:scale-95 transition-transform group"
             >
-                 <div className="flex items-center gap-1.5 mb-1">
-                    <div className="bg-orange-100 p-1 rounded-full">
-                        <Flame size={12} className="text-orange-500 fill-orange-500" />
-                    </div>
-                    <span className="text-xs font-bold text-ink-900">坚持 {recordedDays} 天</span>
+                 <div className="flex items-center gap-1">
+                    <Flame size={10} className="text-orange-500 fill-orange-500" />
+                    <span className="text-[11px] font-bold text-ink-900">{recordedDays} 天</span>
                  </div>
-                 <div className="flex items-center gap-1 text-ink-400 group-hover:text-primary-500 transition-colors">
-                    <span className="text-[10px] font-medium">查看足迹</span>
-                    <ChevronRight size={10} />
-                 </div>
+                 <div className="w-px h-3 bg-ink-200"></div>
+                 <ChevronRight size={12} className="text-ink-400 group-hover:text-primary-500" />
             </button>
-        </div>
-
-        {/* Quote - Compact */}
-        <div className="mt-4 relative pl-3 border-l-2 border-primary-200">
-            <p className="text-sm text-ink-700 font-serif leading-relaxed italic pr-4">
-                "{dailyQuote}"
-            </p>
         </div>
       </header>
     );
@@ -228,8 +217,6 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
       // MIT (Focus)
       if (entry.todayMitDescription) {
           const isDone = entry.mitCompleted;
-          // Only show if it is done OR if it's the only thing that makes the entry valid (which is handled by filter already)
-          // Actually, we show it if it exists.
           
           moments.push({ 
               id: `${entry.id}-mit`, 
@@ -303,7 +290,7 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
       <Background />
       <Header onNavigate={onNavigate} recordedDays={recordedDays} />
 
-      <div className="flex-1 overflow-y-auto no-scrollbar px-6 pb-32 pt-2 z-10 min-h-0">
+      <div className="flex-1 overflow-y-auto no-scrollbar px-6 pb-32 pt-4 z-10 min-h-0">
          <div className="flex flex-col gap-5 max-w-md mx-auto">
              {sortedKeys.map((label, groupIdx) => (
                  <div key={label} className="w-full flex flex-col gap-3 animate-fade-in" style={{ animationDelay: `${groupIdx * 100}ms` }}>
@@ -317,7 +304,6 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
 
                      <div className="w-full flex flex-col gap-3">
                          {grouped[label].map((m) => {
-                             // Unified styling for all item types including focus
                              return (
                                 <div 
                                     key={m.id} 
@@ -333,7 +319,6 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
                                             {m.label}
                                             </span>
                                         </div>
-                                        {/* Clamped Text - Using Normal Font Weight */}
                                         <p className={`text-[15px] leading-relaxed font-normal line-clamp-2 overflow-hidden text-ellipsis ${m.isDone === false ? 'text-ink-500 line-through decoration-ink-300' : 'text-ink-700'}`}>
                                             {m.text}
                                         </p>

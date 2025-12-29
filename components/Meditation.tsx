@@ -14,12 +14,10 @@ export const Meditation: React.FC = () => {
   const gainNodeRef = useRef<GainNode | null>(null);
   const soundNodesRef = useRef<any[]>([]);
 
-  // Cleanup on unmount
   useEffect(() => {
     return () => stopSound();
   }, []);
 
-  // Update timer
   useEffect(() => {
     let interval: any = null;
     if (isActive && timeLeft > 0) {
@@ -43,7 +41,7 @@ export const Meditation: React.FC = () => {
   };
 
   const createWhiteNoiseBuffer = (ctx: AudioContext) => {
-    const bufferSize = ctx.sampleRate * 2; // 2 seconds
+    const bufferSize = ctx.sampleRate * 2; 
     const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
     const data = buffer.getChannelData(0);
     for (let i = 0; i < bufferSize; i++) {
@@ -53,7 +51,7 @@ export const Meditation: React.FC = () => {
   };
 
   const playSound = () => {
-    stopSound(); // Ensure clear previous
+    stopSound(); 
     initAudio();
     const ctx = audioContextRef.current;
     if (!ctx) return;
@@ -65,7 +63,6 @@ export const Meditation: React.FC = () => {
 
     const noiseBuffer = createWhiteNoiseBuffer(ctx);
     
-    // Sound synthesis logic (same as before but preserved functionality)
     if (soundType === 'white') {
       const src = ctx.createBufferSource();
       src.buffer = noiseBuffer;
@@ -175,87 +172,88 @@ export const Meditation: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-full p-6 text-center relative overflow-hidden bg-cream">
-      {/* Background Blobs */}
-      <div className={`absolute top-1/4 left-1/4 w-72 h-72 bg-primary-200/40 rounded-full blur-3xl transition-all duration-[3000ms] mix-blend-multiply ${isActive ? 'scale-150 animate-breathe' : 'scale-100'}`} />
-      <div className={`absolute bottom-1/4 right-1/4 w-72 h-72 bg-mint-200/40 rounded-full blur-3xl transition-all duration-[4000ms] mix-blend-multiply ${isActive ? 'scale-125 animate-float' : 'scale-100'}`} />
+    <div className="flex flex-col items-center justify-start h-full p-6 pt-16 pb-44 text-center relative overflow-hidden bg-cream">
+      {/* Dynamic Background Blobs */}
+      <div className={`absolute top-1/4 left-1/4 w-80 h-80 bg-primary-200/30 rounded-full blur-[80px] transition-all duration-[4000ms] mix-blend-multiply pointer-events-none ${isActive ? 'scale-150 animate-breathe opacity-60' : 'scale-100 opacity-30'}`} />
+      <div className={`absolute bottom-1/3 right-1/4 w-72 h-72 bg-mint-200/30 rounded-full blur-[80px] transition-all duration-[5000ms] mix-blend-multiply pointer-events-none ${isActive ? 'scale-125 animate-float opacity-50' : 'scale-100 opacity-20'}`} />
 
-      <div className="z-10 w-full max-w-sm flex flex-col items-center">
-        <h2 className="text-3xl font-bold text-ink-900 mb-2">呼吸 & 冥想</h2>
-        <p className="text-ink-500 mb-12">关注当下，感受呼吸</p>
-
-        {/* Timer Display */}
-        <div className="mb-12 relative group">
-          <div className="text-7xl font-light text-ink-900 tabular-nums tracking-tight">
-            {formatTime(timeLeft)}
-          </div>
-          {/* Subtle indicator under timer */}
-          {isActive && (
-              <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 flex gap-1">
-                  <div className="w-1.5 h-1.5 rounded-full bg-primary-400 animate-bounce delay-0"></div>
-                  <div className="w-1.5 h-1.5 rounded-full bg-primary-400 animate-bounce delay-150"></div>
-                  <div className="w-1.5 h-1.5 rounded-full bg-primary-400 animate-bounce delay-300"></div>
-              </div>
-          )}
+      <div className="z-10 w-full max-w-sm flex flex-col items-center animate-fade-in flex-1">
+        <div className="mb-10">
+          <h2 className="text-3xl font-bold text-ink-900 mb-2 tracking-tight">呼吸 & 冥想</h2>
+          <p className="text-ink-500 text-sm font-medium opacity-70">此刻，让思绪随风而去</p>
         </div>
 
-        {/* Play Controls */}
-        <div className="flex items-center gap-10 mb-12">
-            <button onClick={toggleMute} className="p-4 text-ink-400 hover:text-ink-900 bg-white shadow-soft rounded-full transition-all hover:scale-110">
+        {/* Timer Display - Centered in middle area */}
+        <div className="flex-1 flex flex-col justify-center items-center mb-6">
+          <div className="relative group">
+            <div className="text-[5.5rem] font-light text-ink-900 tabular-nums tracking-tighter leading-none font-serif">
+              {formatTime(timeLeft)}
+            </div>
+            {isActive && (
+                <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 flex gap-1.5">
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary-400 animate-bounce delay-0"></div>
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary-400 animate-bounce delay-150"></div>
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary-400 animate-bounce delay-300"></div>
+                </div>
+            )}
+          </div>
+        </div>
+
+        {/* Play Controls - Action Hub */}
+        <div className="flex items-center gap-8 mb-12">
+            <button onClick={toggleMute} className="p-4 text-ink-400 hover:text-ink-900 bg-white shadow-soft rounded-full transition-all active:scale-90 border border-white">
                 {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
             </button>
             
             <button 
-            onClick={toggleTimer}
-            className="w-24 h-24 bg-ink-900 text-white rounded-[2rem] flex items-center justify-center shadow-xl hover:shadow-2xl hover:scale-105 active:scale-95 transition-all"
+              onClick={toggleTimer}
+              className="w-24 h-24 bg-ink-900 text-white rounded-[2.2rem] flex items-center justify-center shadow-2xl active:scale-90 transition-all hover:shadow-primary-200/50"
             >
-            {isActive ? <Pause size={32} fill="currentColor" /> : <Play size={32} fill="currentColor" className="ml-1" />}
+              {isActive ? <Pause size={32} fill="currentColor" /> : <Play size={32} fill="currentColor" className="ml-1" />}
             </button>
 
-            <button onClick={resetTimer} className="p-4 text-ink-400 hover:text-ink-900 bg-white shadow-soft rounded-full transition-all hover:scale-110">
+            <button onClick={resetTimer} className="p-4 text-ink-400 hover:text-ink-900 bg-white shadow-soft rounded-full transition-all active:scale-90 border border-white">
                 <RotateCcw size={20} />
             </button>
         </div>
 
-        {/* Settings Container */}
-        <div className="bg-white/60 backdrop-blur-md p-2 rounded-[2rem] shadow-sm w-full">
-            {/* Sound Presets */}
-            <div className="flex justify-between p-2 mb-2">
+        {/* Bottom Settings Panel - Compact and Positioned to avoid nav overlap */}
+        <div className="w-full bg-white/40 backdrop-blur-xl p-2 rounded-[2.5rem] shadow-sm border border-white/60 space-y-1">
+            <div className="flex justify-between p-1">
                 {[
-                { id: 'rain', icon: CloudRain },
-                { id: 'wind', icon: Wind },
-                { id: 'white', icon: Radio },
+                  { id: 'rain', icon: CloudRain, label: '细雨' },
+                  { id: 'wind', icon: Wind, label: '微风' },
+                  { id: 'white', icon: Radio, label: '白噪' },
                 ].map((s) => (
-                <button
+                  <button
                     key={s.id}
                     onClick={() => changeSound(s.id as SoundType)}
-                    className={`p-3 rounded-2xl transition-all ${
-                    soundType === s.id 
-                        ? 'bg-primary-100 text-primary-600 shadow-inner' 
-                        : 'text-ink-400 hover:bg-white'
+                    className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-2xl transition-all ${
+                      soundType === s.id 
+                        ? 'bg-white text-primary-600 shadow-md scale-[1.02]' 
+                        : 'text-ink-400 hover:text-ink-600'
                     }`}
-                >
-                    <s.icon size={24} />
-                </button>
+                  >
+                    <s.icon size={20} />
+                    <span className="text-xs font-bold tracking-wide">{s.label}</span>
+                  </button>
                 ))}
             </div>
             
-            {/* Divider */}
-            <div className="h-px w-full bg-gray-100 my-1"></div>
+            <div className="h-px w-full bg-ink-900/5 mx-auto max-w-[90%]"></div>
 
-            {/* Time Presets */}
-            <div className="flex justify-between p-2">
+            <div className="flex justify-between p-1">
                 {[3, 5, 10].map(min => (
                 <button
                     key={min}
                     onClick={() => setPreset(min)}
-                    className={`flex-1 py-2 rounded-xl text-sm font-medium transition-all ${
-                    duration === min * 60 
-                    ? 'bg-white text-ink-900 shadow-sm' 
-                    : 'text-ink-400 hover:text-ink-600'
+                    className={`flex-1 py-2.5 rounded-xl text-xs font-black transition-all ${
+                      duration === min * 60 
+                      ? 'bg-ink-900 text-white shadow-lg' 
+                      : 'text-ink-400 hover:text-ink-600'
                     }`}
                 >
-                    {min} min
+                    {min} MIN
                 </button>
                 ))}
             </div>
