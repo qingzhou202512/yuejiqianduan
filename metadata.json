@@ -1,0 +1,7 @@
+{
+  "name": "悦己手账",
+  "description": "A mindful companion for daily reflection, goal tracking, and meditation.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
